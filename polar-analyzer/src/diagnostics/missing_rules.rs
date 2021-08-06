@@ -8,12 +8,12 @@ use polar_core::{
 
 pub type UnusedRule = (String, usize, usize);
 
-pub fn find_unused_rules(kb: &KnowledgeBase, src: &str) -> Vec<UnusedRule> {
+pub fn find_missing_rules(kb: &KnowledgeBase, src: &str) -> Vec<UnusedRule> {
     let parse_result = polar_core::parser::parse_file_with_errors(0, src);
 
     let mut visitor = UnusedRuleVisitor {
         kb: &kb,
-        unused_rules: vec![],
+        missing_rules: vec![],
     };
 
     if let Ok((lines, _)) = parse_result {
@@ -29,11 +29,11 @@ pub fn find_unused_rules(kb: &KnowledgeBase, src: &str) -> Vec<UnusedRule> {
         }
     }
 
-    visitor.unused_rules
+    visitor.missing_rules
 }
 
 struct UnusedRuleVisitor<'kb> {
-    unused_rules: Vec<UnusedRule>,
+    missing_rules: Vec<UnusedRule>,
     kb: &'kb KnowledgeBase,
 }
 
@@ -62,12 +62,12 @@ Found:
                                 .collect::<Vec<String>>()
                                 .join("\n  ")
                         );
-                        self.unused_rules.push((message, left, right));
+                        self.missing_rules.push((message, left, right));
                     }
                 } else {
                     let (left, right) = t.span().unwrap_or((0, 0));
                     let message = format!("There are no rules with the name \"{}\"", c.name);
-                    self.unused_rules.push((message, left, right));
+                    self.missing_rules.push((message, left, right));
                 }
             }
             _ => {}

@@ -113,7 +113,7 @@ impl Polar {
     #[wasm_bindgen(js_class = Polar, js_name = getUnusedRules)]
     pub fn get_unused_rules(&self, src: &str) -> JsValue {
         let kb = self.inner.kb.read().unwrap();
-        to_value(&diagnostics::find_unused_rules(&kb, src))
+        to_value(&diagnostics::find_missing_rules(&kb, src))
     }
 
     #[wasm_bindgen(js_class = Polar, js_name = getSymbolAt)]
