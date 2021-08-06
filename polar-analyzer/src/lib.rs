@@ -105,11 +105,6 @@ impl Polar {
         to_value(&self.source_map.get_term_info(filename))
     }
 
-    #[wasm_bindgen(js_class = Polar, js_name = getParseErrors)]
-    pub fn get_parse_errors(&self, src: &str) -> JsValue {
-        to_value(&diagnostics::find_parse_errors(&src))
-    }
-
     #[wasm_bindgen(js_class = Polar, js_name = getUnusedRules)]
     pub fn get_unused_rules(&self, src: &str) -> JsValue {
         let kb = self.inner.kb.read().unwrap();

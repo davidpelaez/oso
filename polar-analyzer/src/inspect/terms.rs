@@ -28,7 +28,7 @@ impl TermInfo {
             Value::Expression(operation) => operation.operator.to_polar(),
             _ => term.to_polar(),
         };
-        let location = get_term_location(&kb, &term);
+        let location = get_term_location(kb, term);
         let r#type = match term.value() {
             Value::Number(_) => "Number",
             Value::String(_) => "String",
@@ -698,10 +698,7 @@ fn get_term_location(kb: &KnowledgeBase, t: &Term) -> (Option<String>, usize, us
 }
 
 pub fn get_term_information(kb: &KnowledgeBase) -> Vec<TermInfo> {
-    let mut visitor = TermVisitor {
-        kb: &kb,
-        terms: vec![],
-    };
+    let mut visitor = TermVisitor { kb, terms: vec![] };
 
     kb.rules.iter().for_each(|(_name, generic_rule)| {
         generic_rule
@@ -717,7 +714,7 @@ impl<'kb> Visitor for TermVisitor<'kb> {
         // skip trivial ANDs
         if !matches!(t.value(), Value::Expression(operation) if operation.operator == Operator::And && operation.args.len() <= 1)
         {
-            self.terms.push(TermInfo::from_term(&self.kb, t));
+            self.terms.push(TermInfo::from_term(self.kb, t));
         }
         polar_core::visitor::walk_term(self, t)
     }

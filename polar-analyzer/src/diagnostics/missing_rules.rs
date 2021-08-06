@@ -1,22 +1,23 @@
+use indoc::formatdoc;
+
 use polar_core::{
-    formatting::ToPolarString,
     kb::KnowledgeBase,
     parser::Line,
-    terms::{Operator, Value},
+    terms::{Operator, ToPolarString, Value},
     visitor::Visitor,
 };
 
 pub type UnusedRule = (String, usize, usize);
 
 pub fn find_missing_rules(kb: &KnowledgeBase, src: &str) -> Vec<UnusedRule> {
-    let parse_result = polar_core::parser::parse_file_with_errors(0, src);
+    let parse_result = polar_core::parser::parse_lines(0, src);
 
     let mut visitor = UnusedRuleVisitor {
-        kb: &kb,
+        kb,
         missing_rules: vec![],
     };
 
-    if let Ok((lines, _)) = parse_result {
+    if let Ok(lines) = parse_result {
         for line in lines {
             match line {
                 Line::Rule(r) => {
@@ -48,12 +49,12 @@ impl<'kb> Visitor for UnusedRuleVisitor<'kb> {
                 if let Some(rules) = self.kb.rules.get(&c.name) {
                     if rules.get_applicable_rules(&c.args).is_empty() {
                         let (left, right) = t.span().unwrap_or((0, 0));
-                        let message = format!(
+                        let message = formatdoc!(
                             r#"There are no rules matching the format:
-  {}
-Found:
-  {}
-"#,
+                            {}
+                            Found:
+                            {}
+                            "#,
                             c.to_polar(),
                             rules
                                 .rules
