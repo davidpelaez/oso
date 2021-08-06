@@ -76,3 +76,35 @@ impl<'kb> Visitor for UnusedRuleVisitor<'kb> {
         polar_core::visitor::walk_term(self, t)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::Polar;
+
+    #[test]
+    fn finds_missing_rules() {
+        let p = Polar::wasm_new();
+        p.load(
+            r#"
+            f(1);
+            f(2);
+            g(_x);
+        "#,
+            "test.policy",
+        )
+        .unwrap();
+
+        let target_policy = r#"
+        h(x) if f(x); # should be fine
+        h(x) if g(x); # should be fine
+        h(_x) if f(3); # missing
+    "#;
+
+        let missing_rules = p.with_kb(|kb| find_missing_rules(kb, target_policy));
+
+        assert_eq!(missing_rules.len(), 1);
+        let missing_rule = &target_policy[missing_rules[0].1..missing_rules[0].2];
+        assert_eq!(missing_rule, "f(3)");
+    }
+}

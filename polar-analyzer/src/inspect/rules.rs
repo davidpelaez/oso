@@ -65,3 +65,31 @@ pub fn get_rule_information(kb: &KnowledgeBase) -> Vec<RuleInfo> {
         })
         .collect()
 }
+
+#[cfg(test)]
+mod test {
+    use std::collections::HashSet;
+
+    use super::*;
+    use crate::Polar;
+
+    #[test]
+    fn finds_rules() {
+        let p = Polar::wasm_new();
+        p.load(
+            r#"
+            f(x) if x = 1;
+            g(y) if y = 2;
+        "#,
+            "test.policy",
+        )
+        .unwrap();
+
+        let rules = p.with_kb(|kb| get_rule_information(kb));
+
+        assert_eq!(rules.len(), 2);
+        let symbols: HashSet<String> = rules.into_iter().map(|r| r.symbol).collect();
+        let expected = vec!["f".to_string(), "g".to_string()].into_iter().collect();
+        assert_eq!(symbols, expected);
+    }
+}

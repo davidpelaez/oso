@@ -45,11 +45,18 @@ impl Polar {
     pub fn wasm_new() -> Self {
         console_error_panic_hook::set_once();
         let inner = polar::Polar::new();
-        let _ = inner.enable_roles();
+        // let _ = inner.enable_roles();
         Self {
             inner,
             source_map: Default::default(),
         }
+    }
+
+    #[wasm_bindgen(js_class = Polar, js_name = enableRoles)]
+    pub fn enable_roles(&self) {
+        // swallowing errors for now since we can't actually validate
+        // anything works yet
+        let _ = self.inner.enable_roles();
     }
 
     /// Loads a file into the knowledge base.
@@ -114,5 +121,14 @@ impl Polar {
     #[wasm_bindgen(js_class = Polar, js_name = getSymbolAt)]
     pub fn get_symbol_at(&self, filename: &str, location: usize) -> JsValue {
         to_value(&self.source_map.get_symbol_at(filename, location))
+    }
+
+    #[cfg(test)]
+    pub(crate) fn with_kb<F, R>(&self, f: F) -> R
+    where
+        F: Fn(&polar_core::kb::KnowledgeBase) -> R,
+    {
+        let kb = self.inner.kb.read().unwrap();
+        f(&kb)
     }
 }
