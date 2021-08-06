@@ -1,6 +1,7 @@
 mod database;
 mod diagnostics;
 mod inspect;
+pub mod server;
 
 use database::SourceMap;
 use polar_core::polar;
