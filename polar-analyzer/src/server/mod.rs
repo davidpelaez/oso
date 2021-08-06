@@ -1,5 +1,6 @@
 mod config;
 mod server;
+mod symbols;
 
 use lsp_server::Connection;
 use lsp_types::ServerCapabilities;
