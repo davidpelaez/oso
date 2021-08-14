@@ -1,4 +1,7 @@
+mod completion;
 mod config;
+mod documents;
+mod hover;
 mod server;
 mod symbols;
 

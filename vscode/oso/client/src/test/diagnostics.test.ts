@@ -8,7 +8,7 @@ suite('Should get diagnostics', () => {
 
 	test('Diagnoses parser errors', async () => {
 		await testDiagnostics(parserError, [
-			{ message: 'hit the end of the file unexpectedly. Did you forget a semi-colon at line 1, column 39', range: toRange(0, 38, 0, 38), severity: vscode.DiagnosticSeverity.Error, source: 'polar' },
+			{ message: 'hit the end of the file unexpectedly. Did you forget a semi-colon at line 1, column 39 in file file:///home/sam/work/oso/oso/vscode/oso/client/testFixture/diag-parser-error.polar', range: toRange(0, 38, 0, 38), severity: vscode.DiagnosticSeverity.Error, source: 'polar' },
 		]);
 	});
 
