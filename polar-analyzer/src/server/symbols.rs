@@ -19,6 +19,9 @@ pub fn get_document_symbols(
                     .location_to_range(&filename, location.1, location.2)
                     .unwrap_or_default();
 
+                // `deprecated` is deprecated, but we're not using
+                // it so we'll allow using the deprecated `deprecated` field.
+                #[allow(deprecated)]
                 SymbolInformation {
                     name: symbol,
                     kind: lsp_types::SymbolKind::Method,

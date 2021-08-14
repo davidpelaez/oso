@@ -77,6 +77,7 @@ impl SourceMap {
             })
     }
 
+    #[allow(unused)]
     pub fn offset_to_position(&self, filename: &str, offset: usize) -> Option<Position> {
         self.sources
             .read()

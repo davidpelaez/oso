@@ -14,31 +14,25 @@ pub fn get_hover(polar: &Polar, params: HoverParams) -> Option<Hover> {
         .position_to_offset(&filename, position)
         .expect("file not found");
 
-    polar
-        .get_symbol_at(&filename, offset)
-        .map(
-            |TermInfo {
-                 location,
-                 details,
-                 r#type,
-                 name,
-                 ..
-             }| {
-                eprintln!("Found symbol: {}", name);
-                let (_filename, start, end) = location;
-                let range = polar.source_map.location_to_range(&filename, start, end);
+    polar.get_symbol_at(&filename, offset).map(
+        |TermInfo {
+             location,
+             details,
+             r#type,
+             name,
+             ..
+         }| {
+            eprintln!("Found symbol: {}", name);
+            let (_filename, start, end) = location;
+            let range = polar.source_map.location_to_range(&filename, start, end);
 
-                Hover {
-                    contents: HoverContents::Markup(MarkupContent {
-                        kind: lsp_types::MarkupKind::Markdown,
-                        value: details.unwrap_or_else(|| r#type.clone()),
-                    }),
-                    range,
-                }
-            },
-        )
-        .or_else(|| {
-            eprintln!("No symbol found");
-            None
-        })
+            Hover {
+                contents: HoverContents::Markup(MarkupContent {
+                    kind: lsp_types::MarkupKind::Markdown,
+                    value: details.unwrap_or_else(|| r#type.clone()),
+                }),
+                range,
+            }
+        },
+    )
 }

@@ -11,7 +11,7 @@ use lsp_types::{
         PublishDiagnostics,
     },
     request::{Completion, DocumentSymbolRequest, HoverRequest, ResolveCompletionItem},
-    Diagnostic, DocumentChanges, LogMessageParams, PublishDiagnosticsParams, Url,
+    Diagnostic, LogMessageParams, PublishDiagnosticsParams, Url,
 };
 
 type RequestHandler = Box<dyn Fn(&Server, Request) -> Response + 'static>;

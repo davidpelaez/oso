@@ -2,11 +2,10 @@ mod completion;
 mod config;
 mod documents;
 mod hover;
-mod server;
+mod main;
 mod symbols;
 
 use lsp_server::Connection;
-use lsp_types::ServerCapabilities;
 use serde::de::DeserializeOwned;
 
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -48,7 +47,7 @@ pub fn run_server() -> Result<()> {
         );
     }
 
-    server::main_loop(&connection)?;
+    main::main_loop(&connection)?;
     io_threads.join()?;
 
     // Shut down gracefully.

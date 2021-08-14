@@ -6,7 +6,7 @@ use polar_core::error::PolarError;
 
 use crate::Polar;
 
-use super::server::Server;
+use super::main::Server;
 
 pub fn open_document(server: &Server, params: DidOpenTextDocumentParams) -> crate::Result<()> {
     let mut polar = server.analyzer.write().unwrap();

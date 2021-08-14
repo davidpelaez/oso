@@ -7,8 +7,6 @@ use database::SourceMap;
 use diagnostics::UnusedRule;
 use inspect::{RuleInfo, TermInfo};
 use polar_core::{error::PolarError, polar};
-use serde::{Deserialize, Serialize};
-use wasm_bindgen::prelude::*;
 
 /// Wrapper for the `polar_core::Polar` type.
 /// Used as the API interface for all the analytics
