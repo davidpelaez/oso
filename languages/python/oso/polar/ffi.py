@@ -19,6 +19,9 @@ class Polar:
     def __del__(self):
         lib.polar_free(self.ptr)
 
+    def run_analyzer(self):
+        lib.polar_run_analyzer(self.ptr, 5050)
+
     def new_id(self):
         """Request a unique ID from the canonical external ID tracker."""
         return self.check_result(lib.polar_get_external_id(self.ptr))

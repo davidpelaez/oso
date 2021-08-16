@@ -104,3 +104,29 @@ impl Polar {
         f(&kb)
     }
 }
+
+pub fn run_polar_analyzer(inner: polar::Polar, port: u32) {
+    let source_map = SourceMap::default();
+    {
+        let kb = inner.kb.read().unwrap();
+        let files = kb
+            .sources
+            .sources
+            .iter()
+            .filter_map(|(_, source)| {
+                source
+                    .filename
+                    .as_ref()
+                    .map(|f| (f.as_str(), source.src.as_str()))
+            })
+            .collect();
+        source_map.refresh(&kb, files);
+    }
+
+    let polar = Polar { inner, source_map };
+    let _res = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(server::run_tcp_server(Some(polar), port));
+}

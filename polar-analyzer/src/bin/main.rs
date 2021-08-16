@@ -5,7 +5,9 @@ mod flags {
     xflags::xflags! {
         src "./src/bin/main.rs"
         cmd polar-analyzer {
-            default cmd lsp-server { }
+            default cmd lsp-server {
+                optional --tcp port: u32
+            }
         }
     }
     // generated start
@@ -22,7 +24,9 @@ mod flags {
     }
 
     #[derive(Debug)]
-    pub struct LspServer;
+    pub struct LspServer {
+        pub tcp: Option<u32>,
+    }
 
     impl PolarAnalyzer {
         pub const HELP: &'static str = Self::HELP_;
@@ -56,8 +60,17 @@ fn main() {
 fn try_main() -> xflags::Result<()> {
     let flags = flags::PolarAnalyzer::from_env()?;
     match flags.subcommand {
-        flags::PolarAnalyzerCmd::LspServer(_) => {
-            let _ = polar_analyzer::server::run_server();
+        flags::PolarAnalyzerCmd::LspServer(flags::LspServer { tcp }) => {
+            let rt = tokio::runtime::Builder::new_current_thread()
+                .enable_all()
+                .build()
+                .unwrap();
+            match tcp {
+                Some(port) => rt
+                    .block_on(polar_analyzer::server::run_tcp_server(None, port))
+                    .unwrap(),
+                None => rt.block_on(polar_analyzer::server::run_stdio_server(None)),
+            };
         }
     }
     Ok(())

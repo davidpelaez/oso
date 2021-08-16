@@ -247,6 +247,9 @@ class Polar:
         """
         return self.host.get_class(name)
 
+    def run_analyzer(self):
+        self.ffi_polar.run_analyzer()
+        exit(0)
 
 def polar_class(_cls=None, *, name=None):
     """Decorator to register a Python class with Polar.

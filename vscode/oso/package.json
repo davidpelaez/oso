@@ -41,7 +41,24 @@
     "configuration": {
       "type": "object",
       "title": "Configuration",
-      "properties": {}
+      "properties": {
+        "polarAnalyzer.lspServer.mode": {
+          "scope": "resource",
+          "type": "string",
+          "default": "server",
+          "enum": [
+            "embedded",
+            "server"
+          ],
+          "description": "Choose the server mode."
+        },
+        "polarAnalyzer.lspServer.port": {
+          "scope": "resource",
+          "type": "number",
+          "default": 5050,
+          "description": "When running in server mode, the port to connect to"
+        }
+      }
     }
   },
   "activationEvents": [
